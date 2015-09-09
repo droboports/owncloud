@@ -1,0 +1,26 @@
+/tmp/DroboApps/owncloud/log.txt {
+  missingok
+  notifempty
+  size 50k
+  rotate 1
+  su root root
+  copytruncate
+}
+
+/tmp/DroboApps/owncloud/access.log {
+  missingok
+  notifempty
+  size 50k
+  rotate 1
+  su root root
+  copytruncate
+}
+
+/tmp/DroboApps/owncloud/error.log {
+  missingok
+  notifempty
+  size 50k
+  rotate 1
+  su root root
+  copytruncate
+}
