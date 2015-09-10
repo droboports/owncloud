@@ -247,7 +247,7 @@ if (strpos($out[0], "running") !== FALSE) {
           <ol>
             <li>Make sure your Drobo is reachable from the internet. The following <a href="https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers" target="_new">port</a> must be reachable from the internet (check your <a href="http://portforward.com/" target="_new">router and/or firewall documentation</a>), and must be forwarded to the Drobo:</li>
               <ul>
-                <li>Pydio: TCP:8051</li>
+                <li>ownCloud: TCP:8051</li>
               </ul>
             <li>If your public IP address changes over time<?php if ($publicip != "") { ?> (currently <?php echo $publicip; ?>)<?php } ?>, configure a <a href="http://www.howtogeek.com/66438/how-to-easily-access-your-home-network-from-anywhere-with-ddns/" target="_new">dynamic DNS address</a> to your public IP address.</li>
           </ol>
@@ -269,7 +269,7 @@ if (strpos($out[0], "running") !== FALSE) {
         <div class="panel-body">
           <?php if (! $apprunning) { ?><p><strong>I cannot connect to owncloud on the Drobo.</strong></p>
           <p>Make sure that owncloud is running. Currently it seems to be <strong>stopped</strong>.</p><?php } ?>
-          <p><strong>I cannot connect to Pydio on the Drobo from outside my home network.</strong></p>
+          <p><strong>I cannot connect to ownCloud on the Drobo from outside my home network.</strong></p>
           <?php if ($publicip == "") { ?><p>Make sure that your internet connection is working. Currently it seems your Drobo cannot retrieve its public IP address.</p><?php } ?>
           <p>Make sure that your ports are correctly forwarded and <a href="<?php echo $portscansite; ?>" target="_new">reachable from the internet</a>. If not, please contact your ISP to unblock them.</p>
         </div>
