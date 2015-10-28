@@ -62,7 +62,7 @@ if [ -d "${prog_dir}/app/data" ]; then
 fi
 
 if [ ! -h "${prog_dir}/app/data" ]; then
-  ln -fsT "${data_dir}/data" "${prog_dir}/app/data" || true
+  ln -fs "${data_dir}/data" "${prog_dir}/app/data" || true
 fi
 
 # install apache 2.x
