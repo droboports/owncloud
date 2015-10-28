@@ -26,7 +26,7 @@ find "${prog_dir}" -type f -name "*.default" -print | while read deffile; do
 done
 
 if [ -d "${incron_dir}" ] && [ ! -f "${incron_dir}/${name}" ]; then
-  cp -f "${prog_dir}/${name}.incron" "${incron_dir}/${name}"
+  cp -vf "${prog_dir}/${name}.incron" "${incron_dir}/${name}"
 fi
 
 # migrate data folder to /mnt/DroboFS/System
@@ -37,10 +37,10 @@ fi
 # migrate certs
 mkdir -p "${data_dir}/certs"
 if [ -f "${prog_dir}/etc/certs/cert.pem" ]; then
-  mv "${prog_dir}/etc/certs/cert.pem" "${data_dir}/certs/cert.pem"
+  mv -f "${prog_dir}/etc/certs/cert.pem" "${data_dir}/certs/cert.pem"
 fi
 if [ -f "${prog_dir}/etc/certs/key.pem" ]; then
-  mv "${prog_dir}/etc/certs/key.pem" "${data_dir}/certs/key.pem"
+  mv -f "${prog_dir}/etc/certs/key.pem" "${data_dir}/certs/key.pem"
 fi
 
 # generate cert/key
@@ -56,8 +56,8 @@ fi
 # migrate data
 mkdir -p "${data_dir}/data"
 if [ -d "${prog_dir}/app/data" ]; then
-  mv -vf "${prog_dir}/app/data/".[!.]* "${data_dir}/data/"
-  mv -vf "${prog_dir}/app/data/"* "${data_dir}/data/"
+  mv -f "${prog_dir}/app/data/".[!.]* "${data_dir}/data/"
+  mv -f "${prog_dir}/app/data/"* "${data_dir}/data/"
   rmdir "${prog_dir}/app/data"
 fi
 
