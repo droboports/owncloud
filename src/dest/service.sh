@@ -35,7 +35,6 @@ fi
 
 # All shares will be exposed to the admin group.
 _load_shares() {
-  local share_list
   local share_count
   local share_name
   local share_inode
@@ -48,12 +47,9 @@ _load_shares() {
   fi
 
   # remove all existing shares
-  share_list=$(find "${shares_dir}" \( ! -regex '.*/\..*' \) -mindepth 1 -maxdepth 1 -type d -exec basename {} \;) || true
-  if [ -n "${share_list}" ]; then
-    for share_name in ${share_list}; do
-      "${prog_dir}/libexec/jq" '.group.admin |= with_entries(select(.value.options.datadir != "/mnt/DroboFS/Shares/'"${share_name}"'")) | .' "${mountfile}.tmp" > "${mountfile}.tmp.new" || true
-      mv "${mountfile}.tmp.new" "${mountfile}.tmp"
-    done
+  "${prog_dir}/libexec/jq" '.group.admin |= with_entries(select(.value.options.datadir | startswith("/mnt/DroboFS/Shares/") | not)) | .' "${mountfile}.tmp" > "${mountfile}.tmp.new" || true
+  if [ -f "${mountfile}.tmp.new" ]; then
+    mv "${mountfile}.tmp.new" "${mountfile}.tmp"
   fi
 
   # add new shares
@@ -78,10 +74,13 @@ _load_shares() {
 }
 
 start() {
+  local rc
   # upgrade database
   if [ -f "${prog_dir}/.updatedb" ]; then
-    "${prog_dir}/bin/occ" upgrade
-    rm -f "${prog_dir}/.updatedb"
+    "${prog_dir}/bin/occ" upgrade && rc=$? || rc=$?
+    if [ ${rc} -eq 0 ] || [ ${rc} -eq 3 ]; then
+      rm -f "${prog_dir}/.updatedb"
+    fi
   fi
   # ensure files_external is enabled
   "${prog_dir}/bin/occ" app:enable files_external || true

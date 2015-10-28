@@ -70,6 +70,8 @@ fi
 
 # upgrade database
 if [ -f "${prog_dir}/.updatedb" ]; then
-  "${prog_dir}/bin/occ" upgrade
-  rm -f "${prog_dir}/.updatedb"
+  "${prog_dir}/bin/occ" upgrade && rc=$? || rc=$?
+  if [ ${rc} -eq 0 ] || [ ${rc} -eq 3 ]; then
+    rm -f "${prog_dir}/.updatedb"
+  fi
 fi
