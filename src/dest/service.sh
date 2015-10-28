@@ -7,12 +7,14 @@
 
 framework_version="2.1"
 name="owncloud"
-version="8.1.1"
+version="8.1.3"
 description="ownCloud is a self-hosted file sync and share server"
-depends="apache"
+depends="apache locale"
 webui="WebUI"
 
 prog_dir="$(dirname "$(realpath "${0}")")"
+data_dir="/mnt/DroboFS/System/${name}/data"
+mountfile="${data_dir}/mount.json"
 conffile="${prog_dir}/etc/owncloudapp.conf"
 apachefile="${DROBOAPPS_DIR}/apache/conf/includes/owncloudapp.conf"
 daemon="${DROBOAPPS_DIR}/apache/service.sh"
@@ -22,13 +24,68 @@ logfile="${tmp_dir}/log.txt"
 statusfile="${tmp_dir}/status.txt"
 errorfile="${tmp_dir}/error.txt"
 
+shares_conf="/mnt/DroboFS/System/DNAS/configs/shares.conf"
+shares_dir="/mnt/DroboFS/Shares"
+
 # backwards compatibility
 if [ -z "${FRAMEWORK_VERSION:-}" ]; then
   framework_version="2.0"
   . "${prog_dir}/libexec/service.subr"
 fi
 
+# All shares will be exposed to the admin group.
+_load_shares() {
+  local share_list
+  local share_count
+  local share_name
+  local share_inode
+
+  # perform changes on a temporary file
+  if [ -f "${mountfile}" ]; then
+    cp "${mountfile}" "${mountfile}.tmp"
+  else
+    echo '{ "group": { "admin": { } } }' > "${mountfile}.tmp"
+  fi
+
+  # remove all existing shares
+  share_list=$(find "${shares_dir}" \( ! -regex '.*/\..*' \) -mindepth 1 -maxdepth 1 -type d -exec basename {} \;) || true
+  if [ -n "${share_list}" ]; then
+    for share_name in ${share_list}; do
+      "${prog_dir}/libexec/jq" '.group.admin |= with_entries(select(.value.options.datadir != "/mnt/DroboFS/Shares/'"${share_name}"'")) | .' "${mountfile}.tmp" > "${mountfile}.tmp.new" || true
+      mv "${mountfile}.tmp.new" "${mountfile}.tmp"
+    done
+  fi
+
+  # add new shares
+  share_count=$("${prog_dir}/libexec/xmllint" --xpath "count(//Share)" "${shares_conf}")
+  if [ ${share_count} -eq 0 ]; then
+    echo "No shares found."
+  else
+    echo "Found ${share_count} shares."
+    for i in $(seq 1 ${share_count}); do
+      share_name=$("${prog_dir}/libexec/xmllint" --xpath "//Share[${i}]/ShareName/text()" "${shares_conf}")
+      share_inode=$(stat -c %i "/mnt/DroboFS/Shares/${share_name}")
+      "${prog_dir}/libexec/jq" '. * { "group": { "admin": {"/$user/files/'"${share_name}"'": { "id": '"${share_inode}"', "class": "\\OC\\Files\\Storage\\Local", "options": { "datadir": "/mnt/DroboFS/Shares/'"${share_name}"'" }, "priority": 150, "storage_id": "'"${share_inode}"'" }}}}' "${mountfile}.tmp" > "${mountfile}.tmp.new"
+      mv "${mountfile}.tmp.new" "${mountfile}.tmp"
+    done
+  fi
+
+  if ! diff -q "${mountfile}.tmp" "${mountfile}"; then
+    mv "${mountfile}.tmp" "${mountfile}"
+  else
+    rm -f "${mountfile}.tmp"
+  fi
+}
+
 start() {
+  # upgrade database
+  if [ -f "${prog_dir}/.updatedb" ]; then
+    "${prog_dir}/bin/occ" upgrade
+    rm -f "${prog_dir}/.updatedb"
+  fi
+  # ensure files_external is enabled
+  "${prog_dir}/bin/occ" app:enable files_external || true
+  reload
   cp -vf "${conffile}" "${apachefile}"
   "${daemon}" restart || true
   return 0
@@ -49,6 +106,10 @@ stop() {
 
 force_stop() {
   stop
+}
+
+reload() {
+  _load_shares
 }
 
 # boilerplate

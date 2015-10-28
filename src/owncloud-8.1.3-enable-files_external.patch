@@ -1,0 +1,8 @@
+--- a/apps/files_external/appinfo/info.xml	2015-09-10 08:34:36.000000000 -0700
++++ b/apps/files_external/appinfo/info.xml	2015-10-27 16:24:08.238162422 -0700
+@@ -22,4 +22,5 @@
+ 	<dependencies>
+ 		<owncloud min-version="8" />
+ 	</dependencies>
++        <default_enable/>
+ </info>

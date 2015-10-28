@@ -1,0 +1,5 @@
+#!/bin/sh
+
+DROBOAPPS_DIR="/mnt/DroboFS/Shares/DroboApps"
+
+"${DROBOAPPS_DIR}/apache/bin/php" "${DROBOAPPS_DIR}/owncloud/app/occ" "$@"

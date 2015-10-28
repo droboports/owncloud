@@ -1,0 +1,11 @@
+diff -ru a/lib/private/security/trusteddomainhelper.php b/lib/private/security/trusteddomainhelper.php
+--- a/lib/private/security/trusteddomainhelper.php	2015-10-10 09:27:52.433802552 -0700
++++ b/lib/private/security/trusteddomainhelper.php	2015-10-10 09:29:35.444507532 -0700
+@@ -66,6 +66,7 @@
+ 	 * have been configured
+ 	 */
+ 	public function isTrustedDomain($domainWithPort) {
++		return true;
+ 		$domain = $this->getDomainWithoutPort($domainWithPort);
+ 
+ 		// Read trusted domains from config

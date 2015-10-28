@@ -16,3 +16,5 @@ set -o nounset  # exit on unset variable
 set -o xtrace   # enable script tracing
 
 /bin/sh "${prog_dir}/service.sh" stop
+
+/bin/touch "${prog_dir}/.updatedb"

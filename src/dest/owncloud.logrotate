@@ -24,3 +24,12 @@
   su root root
   copytruncate
 }
+
+/mnt/DroboFS/System/owncloud/data/owncloud.log {
+  missingok
+  notifempty
+  size 100k
+  rotate 1
+  su root root
+  copytruncate
+}

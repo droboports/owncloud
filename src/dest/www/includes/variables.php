@@ -1,15 +1,18 @@
 <?php 
 $app = "owncloud";
 $appname = "ownCloud";
-$appversion = "8.1.1";
+$appversion = "8.1.3";
 $appsite = "https://owncloud.org/";
 $apphelp = "https://owncloud.org/support/";
 
 $applogs = array("/tmp/DroboApps/".$app."/log.txt",
                  "/tmp/DroboApps/".$app."/access.log",
-                 "/tmp/DroboApps/".$app."/error.log");
+                 "/tmp/DroboApps/".$app."/error.log",
+                 "/mnt/DroboFS/System/".$app."/data/owncloud.log",
+                 "/tmp/DroboApps/".$app."/install.log",
+                 "/tmp/DroboApps/".$app."/update.log");
 
-$appprotos = array("https");
+$appprotos = array("http");
 $appports = array("8051");
 $droboip = $_SERVER['SERVER_ADDR'];
 $apppage = $appprotos[0]."://".$droboip.":".$appports[0]."/";
