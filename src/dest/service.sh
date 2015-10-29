@@ -25,11 +25,24 @@ errorfile="${tmp_dir}/error.txt"
 shares_conf="/mnt/DroboFS/System/DNAS/configs/shares.conf"
 shares_dir="/mnt/DroboFS/Shares"
 
-# backwards compatibility
-if [ -z "${FRAMEWORK_VERSION:-}" ]; then
-  framework_version="2.0"
-  . "${prog_dir}/libexec/service.subr"
-fi
+# check firmware version
+_firmware_check() {
+  local rc
+  local semver
+  rm -f "${statusfile}" "${errorfile}"
+  if [ -z "${FRAMEWORK_VERSION:-}" ]; then
+    echo "Unsupported Drobo firmware, please upgrade to the latest version." > "${statusfile}"
+    echo "4" > "${errorfile}"
+    return 1
+  fi
+  semver="$(/usr/bin/semver.sh "${framework_version}" "${FRAMEWORK_VERSION}")"
+  if [ "${semver}" == "1" ]; then
+    echo "Unsupported Drobo firmware, please upgrade to the latest version." > "${statusfile}"
+    echo "4" > "${errorfile}"
+    return 1
+  fi
+  return 0
+}
 
 # return the data directory from config.php
 _get_data_dir() {
@@ -87,6 +100,7 @@ _load_shares() {
 
 start() {
   local rc
+  _firmware_check
   # upgrade database
   if [ -f "${prog_dir}/.updatedb" ]; then
     "${prog_dir}/bin/occ" upgrade && rc=$? || rc=$?

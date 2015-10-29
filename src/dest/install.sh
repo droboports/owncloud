@@ -7,6 +7,8 @@ name="$(basename "${prog_dir}")"
 data_dir="/mnt/DroboFS/Shares/DroboApps/.AppData/${name}"
 tmp_dir="/tmp/DroboApps/${name}"
 logfile="${tmp_dir}/install.log"
+statusfile="${tmp_dir}/status.txt"
+errorfile="${tmp_dir}/error.txt"
 incron_dir="/etc/incron.d"
 
 # boilerplate
@@ -16,6 +18,12 @@ echo "$(date +"%Y-%m-%d %H-%M-%S"):" "${0}" "${@}"
 set -o errexit  # exit on uncaught error code
 set -o nounset  # exit on unset variable
 set -o xtrace   # enable script tracing
+
+# check firmware version
+if ! /usr/bin/DroboApps.sh sdk_version &> /dev/null; then
+  echo "Unsupported Drobo firmware, please upgrade to the latest version." > "${statusfile}"
+  echo "4" > "${errorfile}"
+fi
 
 # copy default configuration files
 find "${prog_dir}" -type f -name "*.default" -print | while read deffile; do
