@@ -4,7 +4,7 @@
 
 prog_dir="$(dirname "$(realpath "${0}")")"
 name="$(basename "${prog_dir}")"
-data_dir="/mnt/DroboFS/System/${name}"
+data_dir="/mnt/DroboFS/Shares/DroboApps/.AppData/${name}"
 tmp_dir="/tmp/DroboApps/${name}"
 logfile="${tmp_dir}/install.log"
 incron_dir="/etc/incron.d"
