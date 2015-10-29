@@ -46,11 +46,14 @@ _firmware_check() {
 
 # return the data directory from config.php
 _get_data_dir() {
-  if [ -f "${prog_dir}/app/config/config.php" ]; then
-    awk -F\' '$2 == "datadirectory" {print $4}' "${prog_dir}/app/config/config.php"
-  else
-    echo "${prog_dir}/app/data"
+  local datadir=""
+  if [ -s "${prog_dir}/app/config/config.php" ]; then
+    datadir="$(awk -F\' '$2 == "datadirectory" {print $4}' "${prog_dir}/app/config/config.php")"
   fi
+  if [ -z "${datadir}" ]; then
+    datadir="${prog_dir}/app/data"
+  fi
+  echo "${datadir}"
 }
 
 # All shares will be exposed to the admin group.
