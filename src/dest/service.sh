@@ -13,8 +13,6 @@ depends="apache locale"
 webui="WebUI"
 
 prog_dir="$(dirname "$(realpath "${0}")")"
-data_dir="/mnt/DroboFS/System/${name}/data"
-mountfile="${data_dir}/mount.json"
 conffile="${prog_dir}/etc/owncloudapp.conf"
 apachefile="${DROBOAPPS_DIR}/apache/conf/includes/owncloudapp.conf"
 daemon="${DROBOAPPS_DIR}/apache/service.sh"
@@ -33,17 +31,31 @@ if [ -z "${FRAMEWORK_VERSION:-}" ]; then
   . "${prog_dir}/libexec/service.subr"
 fi
 
+# return the data directory from config.php
+_get_data_dir() {
+  if [ -f "${prog_dir}/app/config/config.php" ]; then
+    awk -F\' '$2 == "datadirectory" {print $4}' "${prog_dir}/app/config/config.php"
+  else
+    echo "${prog_dir}/app/data"
+  fi
+}
+
 # All shares will be exposed to the admin group.
 _load_shares() {
+  local data_dir
+  local mountfile
   local share_count
   local share_name
   local share_inode
 
+  data_dir="$(_get_data_dir)"
+  mountfile="${data_dir}/mount.json"
+
   # perform changes on a temporary file
-  if [ -f "${mountfile}" ]; then
-    cp "${mountfile}" "${mountfile}.tmp"
-  else
+  if [ ! -f "${mountfile}" ] || [ "$(cat "${mountfile}")" = "[]" ]; then
     echo '{ "group": { "admin": { } } }' > "${mountfile}.tmp"
+  else
+    cp "${mountfile}" "${mountfile}.tmp"
   fi
 
   # remove all existing shares

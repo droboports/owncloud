@@ -12,7 +12,7 @@ $applogs = array("/tmp/DroboApps/".$app."/log.txt",
                  "/tmp/DroboApps/".$app."/install.log",
                  "/tmp/DroboApps/".$app."/update.log");
 
-$appprotos = array("http");
+$appprotos = array("https");
 $appports = array("8051");
 $droboip = $_SERVER['SERVER_ADDR'];
 $apppage = $appprotos[0]."://".$droboip.":".$appports[0]."/";
