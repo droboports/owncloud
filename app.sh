@@ -1,6 +1,6 @@
 ### OWNCLOUD ###
 _build_owncloud() {
-local VERSION="8.1.3"
+local VERSION="8.2.0"
 local FOLDER="owncloud"
 local FILE="${FOLDER}-${VERSION}.tar.bz2"
 local URL="https://download.owncloud.org/community/${FILE}"
