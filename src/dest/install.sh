@@ -25,6 +25,9 @@ if ! /usr/bin/DroboApps.sh sdk_version &> /dev/null; then
   echo "4" > "${errorfile}"
 fi
 
+# install apache 2+
+/usr/bin/DroboApps.sh install_version apache 2
+
 # copy default configuration files
 find "${prog_dir}" -type f -name "*.default" -print | while read deffile; do
   basefile="$(dirname "${deffile}")/$(basename "${deffile}" .default)"
@@ -63,9 +66,9 @@ fi
 
 # migrate data
 mkdir -p "${data_dir}/data"
-if [ -d "${prog_dir}/app/data" ]; then
-  mv -f "${prog_dir}/app/data/".[!.]* "${data_dir}/data/"
-  mv -f "${prog_dir}/app/data/"* "${data_dir}/data/"
+if [ -d "${prog_dir}/app/data" ] && [ ! -h "${prog_dir}/app/data" ]; then
+  mv -f "${prog_dir}/app/data/".[!.]* "${data_dir}/data/" || true
+  mv -f "${prog_dir}/app/data/"* "${data_dir}/data/" || true
   rmdir "${prog_dir}/app/data"
 fi
 
