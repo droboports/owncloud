@@ -16,9 +16,9 @@ set -o errexit  # exit on uncaught error code
 set -o nounset  # exit on unset variable
 set -o xtrace   # enable script tracing
 
-/bin/sh "${prog_dir}/service.sh" stop
+/bin/sh "${prog_dir}/service.sh" stop || true
 
 rm -fR "${data_dir}"
-mkdir -p "${data_dir}"
+mkdir -p "${data_dir}/data"
 
 /bin/sh "${prog_dir}/service.sh" start

@@ -8,7 +8,7 @@ $apphelp = "https://owncloud.org/support/";
 $applogs = array("/tmp/DroboApps/".$app."/log.txt",
                  "/tmp/DroboApps/".$app."/access.log",
                  "/tmp/DroboApps/".$app."/error.log",
-                 "/mnt/DroboFS/System/".$app."/data/owncloud.log",
+                 "/mnt/DroboFS/Shares/DroboApps/.AppData/".$app."/data/owncloud.log",
                  "/tmp/DroboApps/".$app."/install.log",
                  "/tmp/DroboApps/".$app."/update.log");
 
