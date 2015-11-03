@@ -17,5 +17,5 @@ set -o xtrace   # enable script tracing
 
 /bin/sh "${prog_dir}/service.sh" stop
 
-/usr/bin/find "${prog_dir}/app/apps/" -name version -delete
+/usr/bin/find "${prog_dir}/app/apps/" -name version -print -delete
 /bin/touch "${prog_dir}/.updatedb"
