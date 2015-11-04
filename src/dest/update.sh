@@ -15,7 +15,7 @@ set -o errexit  # exit on uncaught error code
 set -o nounset  # exit on unset variable
 set -o xtrace   # enable script tracing
 
-/bin/sh "${prog_dir}/service.sh" stop
+/bin/sh "${prog_dir}/service.sh" stop || true
 
 /usr/bin/find "${prog_dir}/app/apps/" -name version -print -delete
 /bin/touch "${prog_dir}/.updatedb"
