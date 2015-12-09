@@ -1,7 +1,7 @@
 <?php 
 $app = "owncloud";
 $appname = "ownCloud";
-$appversion = "8.2.0";
+$appversion = "8.2.1";
 $appsite = "https://owncloud.org/";
 $apphelp = "https://owncloud.org/support/";
 

@@ -7,7 +7,7 @@
 
 framework_version="2.1"
 name="owncloud"
-version="8.2.0"
+version="8.2.1"
 description="ownCloud is a self-hosted file sync and share server"
 depends="apache locale"
 webui="WebUI"
@@ -89,7 +89,7 @@ _load_shares() {
     for i in $(seq 1 ${share_count}); do
       share_name=$("${prog_dir}/libexec/xmllint" --xpath "//Share[${i}]/ShareName/text()" "${shares_conf}")
       share_inode=$(stat -c %i "/mnt/DroboFS/Shares/${share_name}")
-      "${prog_dir}/libexec/jq" '. * { "group": { "admin": {"/$user/files/'"${share_name}"'": { "id": '"${share_inode}"', "class": "\\OC\\Files\\Storage\\Local", "options": { "datadir": "/mnt/DroboFS/Shares/'"${share_name}"'" }, "priority": 150, "storage_id": "'"${share_inode}"'" }}}}' "${mountfile}.tmp" > "${mountfile}.tmp.new"
+      "${prog_dir}/libexec/jq" '. * { "group": { "admin": {"/$user/files/'"${share_name}"'": { "id": '"${share_inode}"', "backend": "local", "authMechanism": "null::null", "options": { "datadir": "/mnt/DroboFS/Shares/'"${share_name}"'" }, "priority": 150, "mountOptions": { "previews": true, "filesystem_check_changes": 2 } }}}}' "${mountfile}.tmp" > "${mountfile}.tmp.new"
       mv "${mountfile}.tmp.new" "${mountfile}.tmp"
     done
   fi
