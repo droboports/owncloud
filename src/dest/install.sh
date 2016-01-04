@@ -25,9 +25,6 @@ if ! /usr/bin/DroboApps.sh sdk_version &> /dev/null; then
   echo "4" > "${errorfile}"
 fi
 
-# install apache 2+
-/usr/bin/DroboApps.sh install_version apache 2
-
 # copy default configuration files
 find "${prog_dir}" -type f -name "*.default" -print | while read deffile; do
   basefile="$(dirname "${deffile}")/$(basename "${deffile}" .default)"
@@ -76,8 +73,8 @@ if [ ! -h "${prog_dir}/app/data" ]; then
   ln -fs "${data_dir}/data" "${prog_dir}/app/data" || true
 fi
 
-# install apache 2.x
-/usr/bin/DroboApps.sh install_version apache 2
+# install apache >= 2.4.17
+/usr/bin/DroboApps.sh install_version apache 2.4.17
 
 # upgrade database
 if [ -f "${prog_dir}/.updatedb" ]; then
