@@ -18,7 +18,10 @@ set -o xtrace   # enable script tracing
 
 /bin/sh "${prog_dir}/service.sh" stop || true
 
-rm -fR "${data_dir}"
+rm -fR "${data_dir}/data"
 mkdir -p "${data_dir}/data"
+
+# remove old config.php
+rm -f "${prog_dir}/app/config/config.php"
 
 /bin/sh "${prog_dir}/service.sh" start

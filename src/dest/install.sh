@@ -11,6 +11,8 @@ statusfile="${tmp_dir}/status.txt"
 errorfile="${tmp_dir}/error.txt"
 incron_dir="/etc/incron.d"
 
+openssl="/mnt/DroboFS/Shares/DroboApps/apache/libexec/openssl"
+
 # boilerplate
 if [ ! -d "${tmp_dir}" ]; then mkdir -p "${tmp_dir}"; fi
 exec 3>&1 4>&2 1>> "${logfile}" 2>&1
@@ -25,6 +27,9 @@ if ! /usr/bin/DroboApps.sh sdk_version &> /dev/null; then
   echo "4" > "${errorfile}"
 fi
 
+# install apache >= 2.4.17
+/usr/bin/DroboApps.sh install_version apache 2.4.17
+
 # copy default configuration files
 find "${prog_dir}" -type f -name "*.default" -print | while read deffile; do
   basefile="$(dirname "${deffile}")/$(basename "${deffile}" .default)"
@@ -37,7 +42,7 @@ if [ -d "${incron_dir}" ] && [ ! -f "${incron_dir}/${name}" ]; then
   cp -vf "${prog_dir}/${name}.incron" "${incron_dir}/${name}"
 fi
 
-# migrate data folder to /mnt/DroboFS/System
+# migrate data folder to /mnt/DroboFS/Shares/DroboApps/.AppData
 if [ ! -d "${data_dir}" ]; then
   mkdir -p "${data_dir}"
 fi
@@ -72,9 +77,6 @@ fi
 if [ ! -h "${prog_dir}/app/data" ]; then
   ln -fs "${data_dir}/data" "${prog_dir}/app/data" || true
 fi
-
-# install apache >= 2.4.17
-/usr/bin/DroboApps.sh install_version apache 2.4.17
 
 # upgrade database
 if [ -f "${prog_dir}/.updatedb" ]; then
