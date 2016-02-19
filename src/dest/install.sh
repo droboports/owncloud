@@ -27,8 +27,8 @@ if ! /usr/bin/DroboApps.sh sdk_version &> /dev/null; then
   echo "4" > "${errorfile}"
 fi
 
-# install apache >= 2.4.17
-/usr/bin/DroboApps.sh install_version apache 2.4.17
+# install apache >= 2.4.18
+/usr/bin/DroboApps.sh install_version apache 2.4.18
 
 # copy default configuration files
 find "${prog_dir}" -type f -name "*.default" -print | while read deffile; do
